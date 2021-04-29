@@ -1,0 +1,4 @@
+{
+    "bodyType":"xml",
+    "keyIdentifier": "string(/catalog/book[1]/genre)"
+}
