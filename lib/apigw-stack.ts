@@ -24,17 +24,16 @@ import * as lambda from "@aws-cdk/aws-lambda";
 import * as dynamodb from "@aws-cdk/aws-dynamodb";
 import * as iam from "@aws-cdk/aws-iam";
 
-
 import * as api from "@aws-cdk/aws-apigateway";
 import { Fn } from "@aws-cdk/core";
 import { AllowedMethods } from "@aws-cdk/aws-cloudfront";
 import { Tracing } from "@aws-cdk/aws-lambda";
 import { ApiKeySourceType } from "@aws-cdk/aws-apigateway";
 
-export declare enum KeySourceType {   
+export declare enum KeySourceType {
   REQUESTPARAMETER = "RequestParameter",
   HEADERPARAMETER = "Header",
-  BODY = "Body"
+  BODY = "Body",
 }
 
 interface ApiGWStackProps extends cdk.StackProps {
@@ -58,11 +57,7 @@ interface ApiGWStackProps extends cdk.StackProps {
 }
 
 export class ApiGWStack extends cdk.Stack {
-  constructor(
-    scope: cdk.Construct,
-    id: string,
-    props: ApiGWStackProps
-  ) {
+  constructor(scope: cdk.Construct, id: string, props: ApiGWStackProps) {
     super(scope, id, props);
 
     //Create Dynamodb Table
@@ -138,6 +133,13 @@ export class ApiGWStack extends cdk.Stack {
         integrationResponses: [
           {
             statusCode: "200",
+            responseTemplates: {
+              "application/json": ` 
+                         { "name": "Basic of C++",
+                           "ISBN" : "978-3-16-148410-0",
+                           "registrationDate": 1598274405
+                         }`,
+            },
           },
         ],
         passthroughBehavior: api.PassthroughBehavior.NEVER,
@@ -178,15 +180,15 @@ export class ApiGWStack extends cdk.Stack {
       });
     });
 
-    //Consider CF route only if body needs to be parsed to decide 
+    //Consider CF route only if body needs to be parsed to decide
     if (props.keysourcetype == "Body") {
       const lambdaatedge = new lambda.Function(this, "LambdaAtEdge", {
-        runtime: lambda.Runtime.NODEJS_10_X,
+        runtime: lambda.Runtime.NODEJS_12_X,
         handler: "lambdaatedge.handler",
         code: lambda.Code.fromAsset(path.join("./lambda")),
         tracing: Tracing.ACTIVE,
       });
-      
+
       const domain = Fn.join(".", [
         restapi.restApiId,
         "execute-api",
@@ -198,7 +200,9 @@ export class ApiGWStack extends cdk.Stack {
         cachePolicyName: "CachingPolicy",
         comment: "A  policy for serving APIs",
         cookieBehavior: cloudfront.CacheCookieBehavior.all(),
-        headerBehavior: cloudfront.CacheHeaderBehavior.allowList('OriginKeyIdentifier'),
+        headerBehavior: cloudfront.CacheHeaderBehavior.allowList(
+          "OriginKeyIdentifier"
+        ),
         queryStringBehavior: cloudfront.CacheQueryStringBehavior.all(),
         enableAcceptEncodingGzip: true,
         enableAcceptEncodingBrotli: true,
@@ -222,17 +226,16 @@ export class ApiGWStack extends cdk.Stack {
           },
         }
       );
-      new cdk.CfnOutput(this, 'CloudfrontDistribution', {
-        value: cloudfrontdistribution.distributionId
+      new cdk.CfnOutput(this, "CloudfrontDistribution", {
+        value: cloudfrontdistribution.distributionId,
       });
-      new cdk.CfnOutput(this, 'CloudfrontDomainName', {
-        value: cloudfrontdistribution.domainName
+      new cdk.CfnOutput(this, "CloudfrontDomainName", {
+        value: cloudfrontdistribution.domainName,
       });
     }
 
-    new cdk.CfnOutput(this, 'DynamodbTable', {
-      value: lookupTable.tableName
+    new cdk.CfnOutput(this, "DynamodbTable", {
+      value: lookupTable.tableName,
     });
-
   }
 }

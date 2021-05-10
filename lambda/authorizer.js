@@ -16,7 +16,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-console.log("Loading function");
+
 const AWS = require("aws-sdk");
 let KEY_SOURCE_TYPE = process.env.KEY_SOURCE_TYPE;
 let KEY_SOURCE = process.env.KEY_SOURCE;
@@ -76,20 +76,19 @@ exports.handler = async function (event, context, callback) {
   //3. If source is keysourcetype is Body , then read the value of header  with name `keysource`.
   //   The L@E will parse the body and set the keysource in the header
   var lookupkey = null;
-  var keyName = null;
+  var awskeyid = null;
   var usageIdentifierKey = null;
-  //var denyRequest = true;
   console.log("Key source will be : ", KEY_SOURCE);
   try {
     if (KEY_SOURCE_TYPE == "RequestParameter") {
       console.log("JSON path is ", "$.queryStringParameters." + KEY_SOURCE);
       lookupkey = jp.query(event, "$.queryStringParameters." + KEY_SOURCE);
     }
-    if (KEY_SOURCE_TYPE == "Header") {
+    else if (KEY_SOURCE_TYPE == "Header") {
       console.log("JSON path is ", "$.headers." + KEY_SOURCE);
       lookupkey = jp.query(event, "$.headers." + KEY_SOURCE);
     }
-    if (KEY_SOURCE_TYPE == "Body") {
+    else if (KEY_SOURCE_TYPE == "Body") {
       console.log("JSON path is ", "$.headers." + ORIGINKEYIDENTIFIER);
       lookupkey = jp.query(event, "$.headers." + ORIGINKEYIDENTIFIER);
     }
@@ -113,24 +112,16 @@ exports.handler = async function (event, context, callback) {
         },
         TableName: TABLE_NAME,
       };
-      console.log("querying dynamodb");
       const dynamodbresponse = await dynamodb.getItem(keylookupparam).promise();
       if (dynamodbresponse.Item) {
-        keyName = dynamodbresponse.Item.keyname;
-        console.log(
-          "Dynamodb response ",
-          dynamodbresponse,
-          " Key name is ",
-          keyName.S
-        );
+        awskeyid = dynamodbresponse.Item.awskeyid;
         var apikeyparams = {
-          apiKey: keyName.S,
+          apiKey: awskeyid.S,
           includeValue: true,
         };
         const apigatewaydata = await apigateway
           .getApiKey(apikeyparams)
           .promise();
-        console.log("API Key data", apigatewaydata);
         if (apigatewaydata) {
           usageIdentifierKey = apigatewaydata.value;
           var policy = new AuthPolicy(
@@ -144,7 +135,6 @@ exports.handler = async function (event, context, callback) {
           authResponse.context = {
             reason: "Successful Authorization",
           };
-          console.log("Output - > ", JSON.stringify(authResponse));
           callback(null, authResponse);
         } else {
           callback("Unauthorized", null);
@@ -154,7 +144,6 @@ exports.handler = async function (event, context, callback) {
       }
     }
   } catch (error) {
-    console.log("Error is ", error);
     callback("Unauthorized", null);
   }
 };

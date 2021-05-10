@@ -31,7 +31,7 @@ Sample request body
 </catalog>
 ```
 
-For above sample , if the key identifer is the genre , ensure  you use xpath notation for `keyIdentifier` to `string(/catalog/book[1]/genre)` in `lambda/BodyMetaData.json`. Since the request body is xml mention `bodyType` to be `xml`
+For above sample , if the key identifer is the `genre` , ensure  you use xpath notation for `keyIdentifier` to `string(/catalog/book[1]/genre)` in `lambda/BodyMetaData.json`. Since the request body is xml mention `bodyType` to be `xml`
 
 #### JSON
 
@@ -47,17 +47,38 @@ For above sample , if the key identifer is the genre , ensure  you use xpath not
 }
 ```
 
-For above sample , if the key identifer is the source , ensure  you use xpath notation for `keyIdentifier` to `$.preferedCommunication.source` in `lambda/BodyMetaData.json`. Since the request body is json mention `bodyType` to be `json` 
+For above sample , if the key identifer is  `source` , ensure  you use xpath notation for `keyIdentifier` to `$.preferedCommunication.source` in `lambda/BodyMetaData.json`. Since the request body is json mention `bodyType` to be `json` 
 
 ### Deployment
 
 Prerequisites requires installation of  [AWS CDK 1.85.0+](https://docs.aws.amazon.com/cdk/latest/guide/cli.html)
+
+Run following command in `lambda` directory to download the needed nodejs dependencies
+
+```node
+npm install
+```
 
 To deploy the solution refer the commands
 
 * `cdk deploy`     deploy this stack to your default AWS account/region
 * `cdk diff`       compare deployed stack with current state
 * `cdk synth`      emits the synthesized CloudFormation template
+
+#### Populate Dynamodb lookup table
+
+After the depolyment is complete , note the `DynamodbTable` output parameter. Populate that dynamodb table with value of key identifier value to awskeyid (NOTE:  This is different from key name and can be found on AWS Console). A sample CLI command to add one record for XML example above is
+
+```
+aws dynamodb put-item \
+    --table-name ApiGWStackbody-lookuptableF6A7E1C6-1RK11ZGKCWVYE \
+    --item '{
+  		"id": {"S": "Computer"},
+  		"awskeyid": {"S": "1ha4frr8n0"}
+	}' \
+    --return-consumed-capacity TOTAL
+```
+
 
 ## Security
 
