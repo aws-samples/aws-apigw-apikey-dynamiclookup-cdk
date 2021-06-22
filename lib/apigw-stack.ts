@@ -185,7 +185,7 @@ export class ApiGWStack extends cdk.Stack {
       const lambdaatedge = new lambda.Function(this, "LambdaAtEdge", {
         runtime: lambda.Runtime.NODEJS_12_X,
         handler: "lambdaatedge.handler",
-        code: lambda.Code.fromAsset(path.join("./lambda")),
+        code: lambda.Code.fromAsset(path.join("./lambdaatedge")),
         tracing: Tracing.ACTIVE,
       });
 

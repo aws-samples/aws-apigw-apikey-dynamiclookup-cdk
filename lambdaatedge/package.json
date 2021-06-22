@@ -1,0 +1,10 @@
+{
+    "name": "lambdaatedge",
+    "version": "0.1.0",
+    "dependencies": {
+        "jsonpath": "^1.1.0",
+        "querystring": "^0.2.0",
+        "xmldom": "^0.4.0",
+        "xpath": "^0.0.32"
+    }
+}

@@ -81,15 +81,12 @@ exports.handler = async function (event, context, callback) {
   console.log("Key source will be : ", KEY_SOURCE);
   try {
     if (KEY_SOURCE_TYPE == "RequestParameter") {
-      console.log("JSON path is ", "$.queryStringParameters." + KEY_SOURCE);
       lookupkey = jp.query(event, "$.queryStringParameters." + KEY_SOURCE);
     }
     else if (KEY_SOURCE_TYPE == "Header") {
-      console.log("JSON path is ", "$.headers." + KEY_SOURCE);
       lookupkey = jp.query(event, "$.headers." + KEY_SOURCE);
     }
     else if (KEY_SOURCE_TYPE == "Body") {
-      console.log("JSON path is ", "$.headers." + ORIGINKEYIDENTIFIER);
       lookupkey = jp.query(event, "$.headers." + ORIGINKEYIDENTIFIER);
     }
     lookupkey = lookupkey.toString();
