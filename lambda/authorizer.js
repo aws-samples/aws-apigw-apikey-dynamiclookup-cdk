@@ -79,6 +79,7 @@ exports.handler = async function (event, context, callback) {
   var awskeyid = null;
   var usageIdentifierKey = null;
   console.log("Key source will be : ", KEY_SOURCE);
+  console.log("event is ",JSON.stringify(event))
   try {
     if (KEY_SOURCE_TYPE == "RequestParameter") {
       lookupkey = jp.query(event, "$.queryStringParameters." + KEY_SOURCE);

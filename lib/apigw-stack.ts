@@ -66,6 +66,7 @@ export class ApiGWStack extends cdk.Stack {
         name: "id",
         type: dynamodb.AttributeType.STRING,
       },
+      removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
     const authorizerfunction = new lambda.Function(
@@ -91,7 +92,7 @@ export class ApiGWStack extends cdk.Stack {
       })
     );
 
-    const restapi = new api.RestApi(this, "MyRestApi", {
+    const restapi = new api.RestApi(this, "BookApi-"+props.keysourcetype, {
       endpointConfiguration: {
         types: [api.EndpointType.REGIONAL],
       },
@@ -135,7 +136,7 @@ export class ApiGWStack extends cdk.Stack {
             statusCode: "200",
             responseTemplates: {
               "application/json": ` 
-                         { "name": "Basic of C++",
+                         { "name": "Basic of whatever",
                            "ISBN" : "978-3-16-148410-0",
                            "registrationDate": 1598274405
                          }`,

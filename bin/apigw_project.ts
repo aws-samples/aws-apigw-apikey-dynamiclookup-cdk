@@ -28,82 +28,121 @@ new apigw.ApiGWStack(app, "ApiGWStackbody", {
   keysourcetype: "Body",
   UsagesPlans: [
     {
-      name: "FairUsagePlan",
+      name: "FairUsagePlan1",
       quota: {
-        limit: 10,
+        limit: 100,
         period: Period.DAY,
       },
       throttle: {
         burstLimit: 5,
-        rateLimit: 5,
+        rateLimit: 15,
       },
       keys: [
         {
-          keyIdentifier: "largeBank1",
+          keyIdentifier: "key1",
           keyValue: "9etGN6CmeI1osXpmOdNnsabYJ4W520QT6sMvgVAa",
-        },
-        {
-          keyIdentifier: "largeBank2",
-          keyValue: "9etGN6CmeI1osXpmOdNnsabYJ4W520QT6sMvgVAb",
-        },
+        }
       ],
     },
+    {
+      name: "FairUsagePlan2",
+      quota: {
+        limit: 50,
+        period: Period.DAY,
+      },
+      throttle: {
+        burstLimit: 3,
+        rateLimit: 10,
+      },
+      keys: [
+        {
+          keyIdentifier: "key2",
+          keyValue: "9etGN6CmeI1osXpmOdNnsabYJ4W520QT6sMvgVAh",
+        },
+      ],
+    }
   ],
 });
 
 
 new apigw.ApiGWStack(app, "ApiGWStackparameter", {
   keysourcetype: "RequestParameter",
-  keysource: "tenantId",
+  keysource: "genre",
   UsagesPlans: [
     {
-      name: "FairUsagePlan2",
+      name: "FairUsagePlan",
       quota: {
-        limit: 10,
+        limit: 100,
         period: Period.DAY,
       },
       throttle: {
         burstLimit: 5,
-        rateLimit: 5,
+        rateLimit: 15,
       },
       keys: [
         {
-          keyIdentifier: "largeBank3",
+          keyIdentifier: "key3",
           keyValue: "9etGN6CmeI1osXpmOdNnsabYJ4W520QT6sMvgVAc",
-        },
+        }
+      ],
+    },
+    {
+      name: "FairUsagePlan2",
+      quota: {
+        limit: 50,
+        period: Period.DAY,
+      },
+      throttle: {
+        burstLimit: 3,
+        rateLimit: 10,
+      },
+      keys: [
         {
-          keyIdentifier: "largeBank4",
+          keyIdentifier: "key4",
           keyValue: "9etGN6CmeI1osXpmOdNnsabYJ4W520QT6sMvgVAd",
         },
       ],
-    },
+    }
   ],
 });
 
 new apigw.ApiGWStack(app, "ApiGWStackheader", {
   keysourcetype: "Header",
-  keysource: "tenantId",
+  keysource: "genre",
   UsagesPlans: [
     {
-      name: "FairUsagePlan3",
+      name: "FairUsagePlan",
       quota: {
-        limit: 10,
+        limit: 100,
         period: Period.DAY,
       },
       throttle: {
-        burstLimit: 5,
+        burstLimit: 15,
         rateLimit: 5,
       },
       keys: [
         {
-          keyIdentifier: "largeBank5",
+          keyIdentifier: "key5",
           keyValue: "9etGN6CmeI1osXpmOdNnsabYJ4W520QT6sMvgVAe",
-        },
+        }
+      ],
+    },
+    {
+      name: "FairUsagePlan2",
+      quota: {
+        limit: 50,
+        period: Period.DAY,
+      },
+      throttle: {
+        burstLimit: 3,
+        rateLimit: 10,
+      },
+      keys: [
         {
-          keyIdentifier: "largeBank6",
+          keyIdentifier: "key6",
           keyValue: "9etGN6CmeI1osXpmOdNnsabYJ4W520QT6sMvgVAf",
         },
       ],
-    },
+    }
   ],
 });
