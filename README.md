@@ -13,27 +13,37 @@ There are 3 initialization of the stack. Choose which initialization type is sui
 
 ### Request body samples and mechanism for choosing identifiers
 
-#### XML
+#### Scenario 1 - Key Identifier present in request body.
+In this scenario, the key identifier is present in the request body. The type of request body supported are JSON, XML or form-data. 
 
-Sample request body
+Sample request body - XML
 
 ```xml
-<?xml version="1.0"?>
 <catalog>
    <book id="bk101">
-      <author>Raut, Sanket</author>
-      <title>XML Developer's Guide</title>
+      <author>Famous, Author </author>
+      <title>XML Developer'\''s Guide</title>
       <genre>Computer</genre>
-      <price>104.95</price>
+      <price>44.95</price>
       <publish_date>2000-10-01</publish_date>
-      <description>Indepth infomration for XML.</description>
+      <description>An in-depth look at creating applications 
+      with XML.</description>
    </book>
 </catalog>
 ```
 
-For above sample , if the key identifer is the `genre` , ensure  you use xpath notation for `keyIdentifier` to `string(/catalog/book[1]/genre)` in `lambda/BodyMetaData.json`. Since the request body is xml mention `bodyType` to be `xml`
+For above sample , if the key identifer is the `genre` , ensure  you use xpath notation for `keyIdentifier` to `string(/catalog/book[1]/genre)` in `lambdaatedge/BodyMetaData.json`. Since the request body is xml mention `bodyType` to be `xml`
 
-#### JSON
+The file `lambdaatedge/BodyMetaData.json` should look like 
+```json
+{
+    "bodyType":"xml",
+    "keyIdentifier": "string(/catalog/book[1]/genre)"
+}
+
+```
+
+Sample request body - JSON 
 
 ```json
 {
@@ -49,11 +59,23 @@ For above sample , if the key identifer is the `genre` , ensure  you use xpath n
 
 For above sample , if the key identifer is  `source` , ensure  you use xpath notation for `keyIdentifier` to `$.preferedCommunication.source` in `lambda/BodyMetaData.json`. Since the request body is json mention `bodyType` to be `json` 
 
+
+The file `lambdaatedge/BodyMetaData.json` should look like 
+```json
+{
+    "bodyType":"json",
+    "keyIdentifier": "$.preferedCommunication.source"
+}
+
+This key identifier value should be configured in the Dynamodb table. The name of dynamodb table is printed as output of CDK with label ApiGWStackbody.DynamodbTable.  You would need to  retrieve  AWS Key Id from AWS console and associate it with the api key identifier in dynamodb table.
+
+![Console](https://github.com/aws-samples/aws-apigw-apikey-dynamiclookup-cdk/blob/main/APIKeys.png?raw=trueAPIKeys.png)
+
 ### Deployment
 
 Prerequisites requires installation of  [AWS CDK 1.85.0+](https://docs.aws.amazon.com/cdk/latest/guide/cli.html)
 
-Run following command in `lambda` directory to download the needed nodejs dependencies
+Run following command in `lambda` and `lambdaatedge` directory to download the needed nodejs dependencies
 
 ```node
 npm install
